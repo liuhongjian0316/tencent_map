@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>绘图工具</title>
+<style type="text/css">
+*{
+    margin:0px;
+    padding:0px;
+}
+body, button, input, select, textarea {
+    font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+}
+</style>
+<script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&libraries=drawing"></script>
+<script>
+var overlaysArray = []; //覆盖物容器,用于清除覆盖物
+var radius = 1000;
+var points = "";
+var map;
+
+function init() {
+map = new qq.maps.Map(document.getElementById("container"), {
+center : new qq.maps.LatLng(40.014393,119.853354),
+zoom : 20.0
+});
+
+ var drawingManager = new qq.maps.drawing.DrawingManager({
+        drawingMode: qq.maps.drawing.OverlayType.MARKER,
+        drawingControl: true,
+        drawingControlOptions: {
+            position: qq.maps.ControlPosition.TOP_CENTER,
+            drawingModes: [
+                qq.maps.drawing.OverlayType.MARKER,
+                qq.maps.drawing.OverlayType.CIRCLE,
+                qq.maps.drawing.OverlayType.POLYGON,        
+                qq.maps.drawing.OverlayType.RECTANGLE
+            ]
+        },
+        
+        markerOptions:{
+        visible:false
+        },
+        circleOptions: {
+            fillColor: new qq.maps.Color(255, 208, 70, 0.3),
+            strokeColor: new qq.maps.Color(88, 88, 88, 1),
+            strokeWeight: 3,
+            clickable: false
+        }
+    });
+    drawingManager.setMap(map);
+
+
+ qq.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+        if(event.type=="marker"){    
+        clearOverlays(overlaysArray);  
+    
+          var latLng =event.overlay.getPosition();            
+             lat = latLng.getLat().toFixed(5);
+lng = latLng.getLng().toFixed(5);
+var center = new qq.maps.LatLng(lat, lng);
+var geocoder = new qq.maps.Geocoder();
+geocoder.getAddress(latLng);
+//设置服务请求成功的回调函数
+geocoder.setComplete(function(result) {
+doMarker(center, result.detail.address + latLng);
+                     doCircle(center);
+                     getPeopleDataByCircle(radius,lat+","+lng);
+                 
+});
+//若服务请求失败，则运行以下函数
+geocoder.setError(function() {
+alert("出错了，请输入正确的经纬度！！！");
+});
+                
+        }else if(event.type=="circle"){
+         clearOverlays(overlaysArray);             
+         overlaysArray.push(event.overlay);
+          var latLng =event.overlay.getCenter();  
+          var newRadius=event.overlay.getRadius();       
+             lat = latLng.getLat().toFixed(5);
+lng = latLng.getLng().toFixed(5);
+var center = new qq.maps.LatLng(lat, lng);
+var geocoder = new qq.maps.Geocoder();
+geocoder.getAddress(latLng);
+//设置服务请求成功的回调函数
+geocoder.setComplete(function(result) {
+doMarker(center, result.detail.address + latLng);                    
+                     getPeopleDataByCircle(newRadius,lat+","+lng);
+                 
+});
+//若服务请求失败，则运行以下函数
+geocoder.setError(function() {
+alert("出错了，请输入正确的经纬度！！！");
+});
+        
+        }else if(event.type=="polygon"||event.type=="rectangle"){
+           clearOverlays(overlaysArray);           
+         overlaysArray.push(event.overlay);
+         
+      event.overlay.getPath().forEach(function(e){
+           var lng=e.getLng();
+           var lat=e.getLat();
+        points+=lng+" "+lat+",";
+      });
+       points=points.substring(0, points.length-1);
+       getPeopleDataByPolygon(points);
+        }
+    });
+    
+   
+    
+
+
+}
+
+
+
+
+
+//清除覆盖物
+function clearOverlays(overlaysArray) {
+if (overlaysArray) {
+for (i in overlaysArray) {
+overlaysArray[i].setMap(null);
+}
+}
+}
+
+
+//画圆中心点
+function doMarker(center, title) {
+//创建一个Marker
+var marker = new qq.maps.Marker({
+//设置Marker的位置坐标
+position : center,
+//设置显示Marker的地图
+map : map,
+title : title
+});
+
+
+//设置Marker的可见性，为true时可见,false时不可见，默认属性为true
+marker.setVisible(true);
+//设置Marker的动画属性为从落下
+marker.setAnimation(qq.maps.MarkerAnimation.DOWN);
+overlaysArray.push(marker);
+marker.setMap(map);
+
+
+}
+
+
+//画圆
+function doCircle(center) {
+var circle = new qq.maps.Circle({
+map : map,
+center : center,
+radius : radius,
+strokeWeight : 5
+});
+overlaysArray.push(circle);
+circle.setMap(map);
+}
+
+
+//查询圆数据
+function getPeopleDataByCircle(radius,center) {
+//var circlePath="<%=basePath%>searchProjectInfo?op=circle&raidus="
+//+ radius + "&point=" + center;
+//jQuery.getJSON(circlePath, function(data) {
+//showPeopleData(data);
+//});
+
+alert("圆形中心为:"+center+"半径为:"+radius);
+}
+
+
+
+//查询多边形数据
+function getPeopleDataByPolygon(points) {
+//var polygonPath="<%=basePath%>searchProjectInfo?op=polygon&points="
+//+ points;
+//jQuery.getJSON(polygonPath, function(data) {
+//showPeopleData(data);
+//});
+
+alert("多边形路径为:"+points);
+
+}
+
+</script>
+</head>
+<body onload="init()">
+<div>
+<div style="width:1200px;height:800px;margin: 0 auto;" id="container"></div>
+</body>

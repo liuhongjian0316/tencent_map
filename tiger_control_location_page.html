@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>泰德尔区域</title>
+<style type="text/css">
+html,body{
+    width:100%;
+    height:100%;
+}
+#container{
+    width:100%;
+    height:90%;
+}
+*{
+    margin:0px;
+    padding:0px;
+}
+body, button, input, select, textarea {
+    font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+}
+</style>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.4.1.min.js"></script>
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&libraries=visualization"></script>
+<script>
+var init = function() {
+	//中心点
+    var center = new qq.maps.LatLng(40.014393,119.853354);
+    var map = new qq.maps.Map(document.getElementById('container'),{
+        center: center,
+        zoom: 18,
+    });
+   var path1=[
+		new qq.maps.LatLng(40.01561688366503,119.8535645927169),
+		new qq.maps.LatLng(40.015114341364374,119.85253559866885),
+		new qq.maps.LatLng(40.01454897679959,119.85180486385343),
+		new qq.maps.LatLng(40.01409782406899,119.85151406104046),
+		new qq.maps.LatLng(40.01321264197515,119.85368389645544),
+		new qq.maps.LatLng(40.01454326611134,119.8553392344196),
+		new qq.maps.LatLng(40.01561688366503,119.85357950572688),
+		new qq.maps.LatLng(40.015611173022556,119.85354967970693),
+   ];
+
+    var polygon = new qq.maps.Polygon({
+        path:path1,
+        strokeColor: new qq.maps.Color(56, 124, 234, 1),
+        strokeWeight: 5,
+        fillColor:new qq.maps.Color(0, 245, 255, 0.1),
+        map: map
+    });
+	qq.maps.event.addListener(polygon,"click",function(){
+		alert("您执行了单击事件");
+	});
+	//添加到提示窗
+    var info = new qq.maps.InfoWindow({
+        map: map
+    });
+    setTimeout(function(){
+        var marker=new qq.maps.Marker({
+            position:center,
+            animation:qq.maps.MarkerAnimation.DROP,
+            map:map
+        });
+        //marker.setAnimation(qq.maps.Animation.DROP);
+        //获取标记的点击事件
+        qq.maps.event.addListener(marker, 'click', function() {
+            info.open();
+            info.setContent('<div style="text-align:center;white-space:nowrap;'+
+                'margin:10px;">单击标记</div>');
+            info.setPosition(center);
+        });
+    },2000);
+	//鼠标移动获取 经纬度
+	qq.maps.event.addListener(map,'mousemove',function(event) {
+	        var latLng = event.latLng,
+	            lat = latLng.getLat().toFixed(5),
+	            lng = latLng.getLng().toFixed(5);
+	        document.getElementById("latLng").innerHTML = lat+','+lng;
+	});
+	// 创建热力图对象
+	var heat = new qq.maps.visualization.Heat({
+		map: map, // 必填参数，指定显示热力图的地图对象
+		radius: 80, // 辐射半径，默认为20
+		zIndex: 10
+	});
+	// 获取热力数据
+	var data ={
+		max: 100,
+		min: 0,
+		data:[{
+			lat: 40.014393,
+			lng: 119.853354,
+			value: 100,
+		},
+		{
+			lat: 40.01435,
+			lng: 119.85221,
+			value: 20,
+		},
+		{
+			lat: 40.01392,
+			lng: 119.85360,
+			value: 40,
+		},
+		{
+			lat: 40.01520,
+			lng: 119.85351,
+			value: 40,
+		},
+		{
+			lat: 40.01469,
+			lng: 119.85481,
+			value: 40,
+		}]
+	}
+	// 向热力图传入数据
+	heat.setData(data);
+	
+	//遍历数据根据数据创建tip
+	data.data.forEach((item,index) => {
+	  //创建tips
+	  var infoWin=new qq.maps.InfoWindow({
+	  	map:map,
+	  	position:new qq.maps.LatLng(item.lat,item.lng),
+	  	content:'',
+	  	visible:true
+	  });
+	  infoWin.setContent('当前位置：'+item.lat+'---'+item.lng+'</br>'+'温度：'+item.value)
+	})
+	
+	//创建tips
+	var infoWin=new qq.maps.InfoWindow({
+		map:map,
+		position:center,
+		content:"",
+		visible:false
+	});
+	//设置定时器
+	setInterval(function(){
+		var date=new Date();
+		infoWin.setContent('<div style="width:130px;height:50px;">'+
+			'当前时间为：'+
+			date.getHours()+":"+date.getMinutes()+
+			":"+date.getSeconds()+ '</br>'+
+			'当前位置:'+ '泰德尔工业园'+
+			'</div>'
+		);
+	},500);
+}
+</script>
+</head>
+<body onload="init()">
+<div id="container"></div>
+<div style="width:603px;" id="latLng"></div>
+</body>
+</html>
