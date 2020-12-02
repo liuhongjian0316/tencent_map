@@ -13,6 +13,17 @@ html,body{
     width:100%;
     height:90%;
 }
+.labelStyle{
+    border: 1px solid red;
+    width: 0px;
+    height: 0px;
+    background: red;
+    -webkit-transform: rotate(-50deg);
+    /*-moz-transform: rotate(7deg);*/
+    /*-o-transform: rotate(7deg);*/
+    /*-ms-transform: rotate(7deg);*/
+    /*transform: rotate(7deg);*/
+}
 *{
     margin:0px;
     padding:0px;
@@ -21,137 +32,407 @@ body, button, input, select, textarea {
     font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
 }
 </style>
+</head>
+<body>
+<div id="container"></div>
+<div style="width:603px;" id="latLng"></div>
+<button id="changeBtn">切换园区</button>
+<button id="changeBtn2">切换园区2</button>
+
+
+
 <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.4.1.min.js"></script>
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&libraries=visualization"></script>
 <script>
-var init = function() {
-	//中心点
-    var center = new qq.maps.LatLng(40.014393,119.853354);
-    var map = new qq.maps.Map(document.getElementById('container'),{
-        center: center,
-        zoom: 18,
-    });
-   var path1=[
-		new qq.maps.LatLng(40.01561688366503,119.8535645927169),
-		new qq.maps.LatLng(40.015114341364374,119.85253559866885),
-		new qq.maps.LatLng(40.01454897679959,119.85180486385343),
-		new qq.maps.LatLng(40.01409782406899,119.85151406104046),
-		new qq.maps.LatLng(40.01321264197515,119.85368389645544),
-		new qq.maps.LatLng(40.01454326611134,119.8553392344196),
-		new qq.maps.LatLng(40.01561688366503,119.85357950572688),
-		new qq.maps.LatLng(40.015611173022556,119.85354967970693),
-   ];
+    var id = document.getElementById('container')
+    var centerX = 40.014393
+    var centerY = 119.853354
 
-    var polygon = new qq.maps.Polygon({
-        path:path1,
-        strokeColor: new qq.maps.Color(56, 124, 234, 1),
-        strokeWeight: 5,
-        fillColor:new qq.maps.Color(0, 245, 255, 0.1),
-        map: map
-    });
-	qq.maps.event.addListener(polygon,"click",function(){
-		alert("您执行了单击事件");
-	});
-	//添加到提示窗
-    var info = new qq.maps.InfoWindow({
-        map: map
-    });
-    setTimeout(function(){
-        var marker=new qq.maps.Marker({
-            position:center,
-            animation:qq.maps.MarkerAnimation.DROP,
-            map:map
+    var path1=[
+        new qq.maps.LatLng(40.01561688366503,119.8535645927169),
+        new qq.maps.LatLng(40.015114341364374,119.85253559866885),
+        new qq.maps.LatLng(40.01454897679959,119.85180486385343),
+        new qq.maps.LatLng(40.01409782406899,119.85151406104046),
+        new qq.maps.LatLng(40.01321264197515,119.85368389645544),
+        new qq.maps.LatLng(40.01454326611134,119.8553392344196),
+        new qq.maps.LatLng(40.01561688366503,119.85357950572688),
+        new qq.maps.LatLng(40.015611173022556,119.85354967970693),
+    ];
+    var path2=[
+        new qq.maps.LatLng(40.01460,119.85242),
+        new qq.maps.LatLng(40.01450,119.85260),
+        new qq.maps.LatLng(40.01407,119.85215),
+        new qq.maps.LatLng(40.01418,119.85199),
+    ];
+    var path3=[
+        new qq.maps.LatLng(40.01435,119.85282),
+        new qq.maps.LatLng(40.01395,119.85347),
+        new qq.maps.LatLng(40.01362,119.85312),
+        new qq.maps.LatLng(40.01402,119.85247),
+    ];
+    var path4=[
+        new qq.maps.LatLng(40.01389,119.85368),
+        new qq.maps.LatLng(40.01363,119.85410),
+        new qq.maps.LatLng(40.01329,119.85366),
+        new qq.maps.LatLng(40.01354,119.85324),
+    ];
+    var path5=[
+        new qq.maps.LatLng(40.01455,119.85440),
+        new qq.maps.LatLng(40.01428,119.85483),
+        new qq.maps.LatLng(40.01372,119.85416),
+        new qq.maps.LatLng(40.01400,119.85373),
+    ];
+    var path6=[
+        new qq.maps.LatLng(40.01543,119.85382),
+        new qq.maps.LatLng(40.01524,119.85414),
+        new qq.maps.LatLng(40.01466,119.85356),
+        new qq.maps.LatLng(40.01487,119.85322),
+    ];
+    var path7=[
+        new qq.maps.LatLng(40.01469,119.85389),
+        new qq.maps.LatLng(40.01459,119.85405),
+        new qq.maps.LatLng(40.01417,119.85361),
+        new qq.maps.LatLng(40.01427,119.85345),
+    ];
+    var path8=[
+        new qq.maps.LatLng(40.01518,119.85441),
+        new qq.maps.LatLng(40.01509,119.85454),
+        new qq.maps.LatLng(40.01477,119.85415),
+        new qq.maps.LatLng(40.01484,119.85404),
+    ];
+    var path9=[
+        new qq.maps.LatLng(40.01495,119.85480),
+        new qq.maps.LatLng(40.01486,119.85490),
+        new qq.maps.LatLng(40.01465,119.85462),
+        new qq.maps.LatLng(40.01473,119.85450),
+    ];
+
+    var fillColor = [];
+    fillColor.push(new qq.maps.Color(0, 245, 255, 0.1));
+    fillColor.push(new qq.maps.Color(178, 34, 34, 1));
+    fillColor.push(new qq.maps.Color(238, 154, 73, 1));
+    fillColor.push(new qq.maps.Color(50, 205, 50, 1));
+    fillColor.push(new qq.maps.Color(160, 32, 240, 1));
+    fillColor.push(new qq.maps.Color(255, 20, 147, 1));
+    fillColor.push(new qq.maps.Color(105, 89, 205, 1));
+    fillColor.push(new qq.maps.Color(0, 191, 255, 1));
+    fillColor.push(new qq.maps.Color(0, 0, 139, 1));
+
+    var strokeColor = [];
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor.push(new qq.maps.Color(56, 124, 234, 1));
+
+    var pathData = [];
+    pathData.push(path1)
+    pathData.push(path2)
+    pathData.push(path3)
+    pathData.push(path4)
+    pathData.push(path5)
+    pathData.push(path6)
+    pathData.push(path7)
+    pathData.push(path8)
+    pathData.push(path9)
+    // 位置温度数据
+    var heatArray = [
+        {
+            lat: 40.01446,
+            lng: 119.85346,
+            name:'泰德尔',
+            value: 100,
+        },{
+            lat: 40.01436,
+            lng: 119.85228,
+            name:'1号楼',
+            value: 100,
+        }, {
+            lat: 40.01403,
+            lng: 119.85294,
+            name:'19号楼',
+            value: 20,
+        }, {
+            lat: 40.01369,
+            lng: 119.85372,
+            name:'2号楼',
+            value: 40,
+        }, {
+            lat: 40.01420,
+            lng: 119.85427,
+            name:'3号楼',
+            value: 40,
+        }, {
+            lat: 40.01510,
+            lng: 119.85363,
+            name:'5号楼',
+            value: 40,
+        }, {
+            lat: 40.01446,
+            lng: 119.85374,
+            name:'4号楼',
+            value: 40,
+        }, {
+            lat: 40.01499,
+            lng: 119.85429,
+            name:'6号楼',
+            value: 40,
+        },{
+            lat: 40.01480,
+            lng: 119.85471,
+            name:'7号楼',
+            value: 40,
+        },
+    ]
+    var dataArray = [];
+    for (let i = 0; i < 9; i++) {
+        var data = {};
+        data.path = pathData[i]
+        data.fillColor = fillColor[i]
+        data.strokeColor = strokeColor[i]
+        data.center = heatArray[i]
+        dataArray.push(data);
+    }
+
+    var centerX2 = 40.01660
+    var centerY2 = 119.85916
+
+    var path21=[
+        new qq.maps.LatLng(40.018362933633625,119.85851975080277),
+        new qq.maps.LatLng(40.01740113526966,119.86145391356092),
+        new qq.maps.LatLng(40.01490039656162,119.85742372103107),
+        new qq.maps.LatLng(40.0167016372906,119.85528874693273),
+        new qq.maps.LatLng(40.018362933633625,119.85851975080277),
+        new qq.maps.LatLng(40.018362933633625,119.85851975080277),
+    ];
+    var path22=[
+        new qq.maps.LatLng(40.01675409985104,119.85580251038277),
+        new qq.maps.LatLng(40.01710384953468,119.85646469496601),
+        new qq.maps.LatLng(40.016867768771576,119.85672728563839),
+        new qq.maps.LatLng(40.016544249100406,119.85604226700798),
+        new qq.maps.LatLng(40.01677158745121,119.85579109353341),
+    ];
+    var path23=[
+        new qq.maps.LatLng(40.01641309215361,119.85620210464197),
+        new qq.maps.LatLng(40.01612454593005,119.8565331967593),
+        new qq.maps.LatLng(40.01655299312805,119.85679578725762),
+        new qq.maps.LatLng(40.01672786850914,119.85679578725762),
+        new qq.maps.LatLng(40.01640434837489,119.85620210464197),
+    ];
+    var path24=[
+        new qq.maps.LatLng(40.01603710742243,119.85662453277416),
+        new qq.maps.LatLng(40.01641309215361,119.85741230409462),
+        new qq.maps.LatLng(40.015940924931286,119.85775481336623),
+        new qq.maps.LatLng(40.01566112056447,119.8568871230982),
+        new qq.maps.LatLng(40.016054595106205,119.85662453277416),
+        new qq.maps.LatLng(40.016054595106205,119.85662453277416),
+        new qq.maps.LatLng(40.0160458512482,119.85662453277416),
+    ];
+    var path25=[
+        new qq.maps.LatLng(40.01732244216,119.85710404558893),
+        new qq.maps.LatLng(40.017593496133685,119.85777764732643),
+        new qq.maps.LatLng(40.01720003038677,119.85809732268149),
+        new qq.maps.LatLng(40.016963949822966,119.85738946996025),
+        new qq.maps.LatLng(40.01732244216,119.85711546278685),
+        new qq.maps.LatLng(40.017331185887805,119.85712687963621),
+    ];
+    var path26=[
+        new qq.maps.LatLng(40.01676284371838,119.85760639271234),
+        new qq.maps.LatLng(40.0164830426767,119.85777764732643),
+        new qq.maps.LatLng(40.016666662116705,119.85877092430997),
+        new qq.maps.LatLng(40.01706013100566,119.85858825266143),
+        new qq.maps.LatLng(40.01677158745121,119.8576178096489),
+    ];
+    var path27=[
+        new qq.maps.LatLng(40.017794600123906,119.8583599131307),
+        new qq.maps.LatLng(40.01733992948107,119.85870242242947),
+        new qq.maps.LatLng(40.017663445380094,119.85951302773185),
+        new qq.maps.LatLng(40.018021933642146,119.85910201653621),
+        new qq.maps.LatLng(40.01777711265249,119.85837133011069),
+        new qq.maps.LatLng(40.01775962531003,119.8583599131307),
+    ];
+    var path28=[
+        new qq.maps.LatLng(40.017130080798765,119.85893076196567),
+        new qq.maps.LatLng(40.01674535618272,119.8591134336034),
+        new qq.maps.LatLng(40.017025156082205,119.86010671052168),
+        new qq.maps.LatLng(40.01747982842201,119.8598783710072),
+        new qq.maps.LatLng(40.017121337045204,119.85891934507276),
+    ];
+    var path29=[
+        new qq.maps.LatLng(40.01631691025912,119.85785756623045),
+        new qq.maps.LatLng(40.01574855955072,119.85809732268149),
+        new qq.maps.LatLng(40.016369373115346,119.8595016107954),
+        new qq.maps.LatLng(40.01663168699158,119.85923902029708),
+        new qq.maps.LatLng(40.0162994226759,119.85785756623045),
+        new qq.maps.LatLng(40.0162994226759,119.85785756623045),
+    ];
+
+    var fillColor2 = [];
+    fillColor2.push(new qq.maps.Color(0, 245, 255, 0.1));
+    fillColor2.push(new qq.maps.Color(178, 34, 34, 1));
+    fillColor2.push(new qq.maps.Color(238, 154, 73, 1));
+    fillColor2.push(new qq.maps.Color(50, 205, 50, 1));
+    fillColor2.push(new qq.maps.Color(160, 32, 240, 1));
+    fillColor2.push(new qq.maps.Color(255, 20, 147, 1));
+    fillColor2.push(new qq.maps.Color(105, 89, 205, 1));
+    fillColor2.push(new qq.maps.Color(0, 191, 255, 1));
+    fillColor2.push(new qq.maps.Color(0, 0, 139, 1));
+
+    var strokeColor2 = [];
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+    strokeColor2.push(new qq.maps.Color(56, 124, 234, 1));
+
+    var pathData2 = [];
+    pathData2.push(path21)
+    pathData2.push(path22)
+    pathData2.push(path23)
+    pathData2.push(path24)
+    pathData2.push(path25)
+    pathData2.push(path26)
+    pathData2.push(path27)
+    pathData2.push(path28)
+    pathData2.push(path29)
+    // 位置温度数据
+    var heatArray2 = [
+        {
+            lat: 40.01709,
+            lng: 119.85818,
+            name:'泰德尔',
+            value: 100,
+        },{
+            lat: 40.01684,
+            lng: 119.85623,
+            name:'1号楼',
+            value: 100,
+        }, {
+            lat: 40.01645,
+            lng: 119.85655,
+            name:'19号楼',
+            value: 20,
+        }, {
+            lat: 40.01608,
+            lng: 119.85714,
+            name:'2号楼',
+            value: 40,
+        }, {
+            lat: 40.01733,
+            lng: 119.85756,
+            name:'3号楼',
+            value: 40,
+        }, {
+            lat: 40.01674,
+            lng: 119.85799,
+            name:'5号楼',
+            value: 40,
+        }, {
+            lat: 40.01627,
+            lng: 119.85856,
+            name:'4号楼',
+            value: 40,
+        }, {
+            lat: 40.01769,
+            lng: 119.85887,
+            name:'6号楼',
+            value: 40,
+        },{
+            lat: 40.01713,
+            lng: 119.85941,
+            name:'7号楼',
+            value: 40,
+        },
+    ]
+
+
+    var dataArray2 = [];
+    for (let i = 0; i < 9; i++) {
+        var data = {};
+        data.path = pathData2[i]
+        data.fillColor = fillColor2[i]
+        data.strokeColor = strokeColor2[i]
+        data.center = heatArray2[i]
+        dataArray2.push(data);
+    }
+
+
+    /**
+     *
+     * @param id 容器id（$('#id')）
+     * @param centerX 中心坐标 X number
+     * @param centerY 中心坐标 Y number
+     * @param dataArray 数据
+     * @param rotate 旋转角度（+ 顺时针） （- 逆时针） number
+     * @param offsetX 文本标记x坐标偏移量 number
+     * @param offsetY 文本坐标y坐标偏移量 number
+     */
+    var init = (id,centerX,centerY,dataArray,rotate,offsetX,offsetY)=> {
+        var center = new qq.maps.LatLng(centerX,centerY);
+        //初始化
+        var map = new qq.maps.Map(id,{
+            center: center,
+            zoom: 18,
         });
-        //marker.setAnimation(qq.maps.Animation.DROP);
-        //获取标记的点击事件
-        qq.maps.event.addListener(marker, 'click', function() {
-            info.open();
-            info.setContent('<div style="text-align:center;white-space:nowrap;'+
-                'margin:10px;">单击标记</div>');
-            info.setPosition(center);
+
+        //渲染各种图层
+        dataArray.forEach((item,index) =>{
+            var polygon = new qq.maps.Polygon({
+                path: item.path,
+                strokeColor: item.strokeColor,//边框颜色
+                strokeWeight: 5, //粗细
+                fillColor: item.fillColor, //填充颜色
+                map: map,
+            });
+            qq.maps.event.addListener(polygon,"click",function(){
+                alert("点击"+item.center.name+"温度为"+item.center.value);
+            });
+
+            var label = new qq.maps.Label({
+                position: new qq.maps.LatLng(item.center.lat,item.center.lng),
+                map: map,
+                content:'',
+                offset: new qq.maps.Size(offsetX,offsetY),
+            });
+            label.setStyle({
+                "width": "0px",
+                "height": "0px",
+                "color": "white",
+                "background": item.fillColor,
+                "-webkit-transform": "rotate("+rotate+"deg)",
+            })
+            label.setContent('<div>'+item.center.name+'</div>'+" ");
+            qq.maps.event.addListener(label,'click',function(event) {
+                alert("点击"+item.center.name+"温度为"+item.center.value);
+            });
+        })
+        //鼠标移动获取 经纬度
+        qq.maps.event.addListener(map,'mousemove',function(event) {
+            var latLng = event.latLng,
+                lat = latLng.getLat().toFixed(5),
+                lng = latLng.getLng().toFixed(5);
+            document.getElementById("latLng").innerHTML = lat+','+lng;
         });
-    },2000);
-	//鼠标移动获取 经纬度
-	qq.maps.event.addListener(map,'mousemove',function(event) {
-	        var latLng = event.latLng,
-	            lat = latLng.getLat().toFixed(5),
-	            lng = latLng.getLng().toFixed(5);
-	        document.getElementById("latLng").innerHTML = lat+','+lng;
-	});
-	// 创建热力图对象
-	var heat = new qq.maps.visualization.Heat({
-		map: map, // 必填参数，指定显示热力图的地图对象
-		radius: 80, // 辐射半径，默认为20
-		zIndex: 10
-	});
-	// 获取热力数据
-	var data ={
-		max: 100,
-		min: 0,
-		data:[{
-			lat: 40.014393,
-			lng: 119.853354,
-			value: 100,
-		},
-		{
-			lat: 40.01435,
-			lng: 119.85221,
-			value: 20,
-		},
-		{
-			lat: 40.01392,
-			lng: 119.85360,
-			value: 40,
-		},
-		{
-			lat: 40.01520,
-			lng: 119.85351,
-			value: 40,
-		},
-		{
-			lat: 40.01469,
-			lng: 119.85481,
-			value: 40,
-		}]
-	}
-	// 向热力图传入数据
-	heat.setData(data);
-	
-	//遍历数据根据数据创建tip
-	data.data.forEach((item,index) => {
-	  //创建tips
-	  var infoWin=new qq.maps.InfoWindow({
-	  	map:map,
-	  	position:new qq.maps.LatLng(item.lat,item.lng),
-	  	content:'',
-	  	visible:true
-	  });
-	  infoWin.setContent('当前位置：'+item.lat+'---'+item.lng+'</br>'+'温度：'+item.value)
-	})
-	
-	//创建tips
-	var infoWin=new qq.maps.InfoWindow({
-		map:map,
-		position:center,
-		content:"",
-		visible:false
-	});
-	//设置定时器
-	setInterval(function(){
-		var date=new Date();
-		infoWin.setContent('<div style="width:130px;height:50px;">'+
-			'当前时间为：'+
-			date.getHours()+":"+date.getMinutes()+
-			":"+date.getSeconds()+ '</br>'+
-			'当前位置:'+ '泰德尔工业园'+
-			'</div>'
-		);
-	},500);
-}
+    }
+
+    window.onload = init(id,centerX,centerY,dataArray,-50,-8,-10);
+
+
+    $('#changeBtn').click(()=>{
+        init(id,centerX2,centerY2,dataArray2,-50,-8,-10);
+    })
+
+    $('#changeBtn2').click(()=>{
+        init(id,centerX,centerY,dataArray,-50,-8,-10);
+    })
 </script>
-</head>
-<body onload="init()">
-<div id="container"></div>
-<div style="width:603px;" id="latLng"></div>
 </body>
 </html>
