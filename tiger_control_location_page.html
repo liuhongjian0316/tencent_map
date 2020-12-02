@@ -9,21 +9,6 @@ html,body{
     width:100%;
     height:100%;
 }
-#container{
-    width:100%;
-    height:90%;
-}
-.labelStyle{
-    border: 1px solid red;
-    width: 0px;
-    height: 0px;
-    background: red;
-    -webkit-transform: rotate(-50deg);
-    /*-moz-transform: rotate(7deg);*/
-    /*-o-transform: rotate(7deg);*/
-    /*-ms-transform: rotate(7deg);*/
-    /*transform: rotate(7deg);*/
-}
 *{
     margin:0px;
     padding:0px;
@@ -34,7 +19,7 @@ body, button, input, select, textarea {
 </style>
 </head>
 <body>
-<div id="container"></div>
+<div id="container" style="width: 100%;height: 90%;"></div>
 <div style="width:603px;" id="latLng"></div>
 <button id="changeBtn">切换园区</button>
 <button id="changeBtn2">切换园区2</button>
@@ -44,7 +29,45 @@ body, button, input, select, textarea {
 <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.4.1.min.js"></script>
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&libraries=visualization"></script>
 <script>
+
+    /**
+     * 获取不规则矩形的中点位置
+     * @param points
+     * @returns {number[]}
+     */
+    var getPointsCenter = (points)=> {
+        var point_num = points.length; //坐标点个数
+        var X = 0, Y = 0, Z = 0;
+        for(let i = 0; i< points.length; i++) {
+            if (points[i] == '') {
+                continue;
+            }
+            let point = points[i].split(',');
+            var lat, lng, x, y, z;
+            lat = parseFloat(point[0]) * Math.PI / 180;
+            lng = parseFloat(point[1]) * Math.PI / 180;
+            x = Math.cos(lat) * Math.cos(lng);
+            y = Math.cos(lat) * Math.sin(lng);
+            z = Math.sin(lat);
+            X += x;
+            Y += y;
+            Z += z;
+        }
+        X = X / point_num;
+        Y = Y / point_num;
+        Z = Z / point_num;
+
+        var tmp_lng = Math.atan2(Y, X);
+        var tmp_lat = Math.atan2(Z, Math.sqrt(X * X + Y * Y));
+
+        return [tmp_lat * 180 / Math.PI, tmp_lng * 180 / Math.PI];
+    }
+
+
     var id = document.getElementById('container')
+
+
+
     var centerX = 40.014393
     var centerY = 119.853354
 
